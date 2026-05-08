@@ -14,11 +14,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/auth"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/config"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/db"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/server"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/user"
+	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/config"
+	"github.com/aszaychik/prima-inti-api/internal/db"
+	"github.com/aszaychik/prima-inti-api/internal/server"
+	"github.com/aszaychik/prima-inti-api/internal/user"
 )
 
 // createTestSchema creates the SQLite test schema using GORM AutoMigrate for consistency

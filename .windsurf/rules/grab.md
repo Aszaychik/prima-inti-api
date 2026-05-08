@@ -10,13 +10,17 @@
 ## Core Principles
 
 ### 1. Clean Architecture
+
 Every domain follows: **Handler → Service → Repository**
+
 - No business logic in handlers
 - No HTTP concerns in services
 - Repository only talks to database
 
 ### 2. Docker-First Development
+
 Developers run `make` on host, Makefile detects Docker and executes commands automatically:
+
 ```bash
 make up          # Start containers
 make test        # Run tests (in container if available)
@@ -26,14 +30,17 @@ make swag        # Generate Swagger docs
 ```
 
 ### 3. Migration Naming Pattern
+
 Format: `YYYYMMDDHHMMSS_verb_noun_table`
 
 Examples:
+
 - `20251025225126_create_users_table`
 - `20251028000000_create_refresh_tokens_table`
 - `20251210120000_add_avatar_to_users_table`
 
 Commands:
+
 ```bash
 make migrate-create NAME=create_todos_table
 make migrate-up
@@ -42,7 +49,9 @@ make migrate-status
 ```
 
 ### 4. Version Checking
+
 Never hardcode versions. Show how to check:
+
 ```bash
 go version                    # Check Go version
 docker --version              # Check Docker
@@ -86,8 +95,9 @@ internal/<domain>/
 ## Authentication & Authorization
 
 **Get current user**:
+
 ```go
-import "github.com/vahiiiid/go-rest-api-boilerplate/internal/contextutil"
+import "github.com/aszaychik/prima-inti-api/internal/contextutil"
 
 userID := contextutil.GetUserID(c)
 userEmail := contextutil.GetEmail(c)
@@ -98,8 +108,9 @@ hasRole := contextutil.HasRole(c, "moderator")
 ```
 
 **Protect routes**:
+
 ```go
-import "github.com/vahiiiid/go-rest-api-boilerplate/internal/middleware"
+import "github.com/aszaychik/prima-inti-api/internal/middleware"
 
 // Admin-only route
 v1.Use(middleware.RequireAdmin()).
@@ -117,7 +128,7 @@ v1.Use(middleware.RequireRole("admin")).
 ```go
 import (
     "errors"
-    apiErrors "github.com/vahiiiid/go-rest-api-boilerplate/internal/errors"
+    apiErrors "github.com/aszaychik/prima-inti-api/internal/errors"
 )
 
 // Validation errors
@@ -149,6 +160,7 @@ c.JSON(http.StatusOK, apiErrors.Success(result))
 ## Testing
 
 **Table-driven tests**:
+
 ```go
 tests := []struct {
     name        string
@@ -169,6 +181,7 @@ for _, tt := range tests {
 ```
 
 **Commands**:
+
 ```bash
 make test              # Run all tests
 make test-coverage     # Generate coverage report
@@ -180,6 +193,7 @@ make test-verbose      # Verbose output
 ## Swagger Documentation
 
 **Annotations**:
+
 ```go
 // @Summary Create todo
 // @Description Create a new todo item
@@ -212,6 +226,7 @@ make swag        # Update Swagger (if API changed)
 ## Out-of-the-Box Features
 
 GRAB includes:
+
 - ✅ JWT Authentication with refresh tokens
 - ✅ RBAC (Role-Based Access Control)
 - ✅ Database migrations (golang-migrate)
@@ -239,20 +254,20 @@ Full guide: https://vahiiiid.github.io/go-rest-api-docs/CONFIGURATION/
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Start development | `make up` |
-| Run tests | `make test` |
-| Lint code | `make lint` |
-| Fix linting | `make lint-fix` |
-| Create migration | `make migrate-create NAME=<name>` |
-| Apply migrations | `make migrate-up` |
-| Update Swagger | `make swag` |
-| View logs | `make logs` |
-| Enter app container | `make exec` |
-| Enter DB container | `make exec-db` |
-| Clean restart | `make down && make up` |
-| Health check | `curl localhost:8080/health` |
+| Task                | Command                           |
+| ------------------- | --------------------------------- |
+| Start development   | `make up`                         |
+| Run tests           | `make test`                       |
+| Lint code           | `make lint`                       |
+| Fix linting         | `make lint-fix`                   |
+| Create migration    | `make migrate-create NAME=<name>` |
+| Apply migrations    | `make migrate-up`                 |
+| Update Swagger      | `make swag`                       |
+| View logs           | `make logs`                       |
+| Enter app container | `make exec`                       |
+| Enter DB container  | `make exec-db`                    |
+| Clean restart       | `make down && make up`            |
+| Health check        | `curl localhost:8080/health`      |
 
 ---
 
@@ -269,6 +284,7 @@ Full guide: https://vahiiiid.github.io/go-rest-api-docs/CONFIGURATION/
 ---
 
 **Resources**:
+
 - Documentation: https://vahiiiid.github.io/go-rest-api-docs/
-- Repository: https://github.com/vahiiiid/go-rest-api-boilerplate
-- Issues: https://github.com/vahiiiid/go-rest-api-boilerplate/issues
+- Repository: https://github.com/aszaychik/prima-inti-api
+- Issues: https://github.com/aszaychik/prima-inti-api/issues

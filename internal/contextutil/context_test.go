@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/auth"
 )
 
 func TestGetUser(t *testing.T) {

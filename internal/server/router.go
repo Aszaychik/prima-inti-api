@@ -7,12 +7,12 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/auth"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/config"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/errors"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/health"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/middleware"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/user"
+	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/config"
+	"github.com/aszaychik/prima-inti-api/internal/errors"
+	"github.com/aszaychik/prima-inti-api/internal/health"
+	"github.com/aszaychik/prima-inti-api/internal/middleware"
+	"github.com/aszaychik/prima-inti-api/internal/user"
 )
 
 // SetupRouter creates and configures the Gin router
