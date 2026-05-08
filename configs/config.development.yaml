@@ -14,7 +14,7 @@ app:
   debug: true # Enable debug mode in development
 
 database:
-  host: "localhost"
+  host: "db"
   port: 5432
   user: "postgres"
   password: "" # Default password for development

@@ -20,7 +20,7 @@ app:
   debug: true # Override with APP_DEBUG
 
 database:
-  host: "localhost" # Override with DATABASE_HOST
+  host: "db" # Override with DATABASE_HOST
   port: 5432 # Override with DATABASE_PORT
   user: "postgres" # Override with DATABASE_USER
   password: "" # Override with DATABASE_PASSWORD (recommended)
