@@ -1,5 +1,4 @@
-module github.com/vahiiiid/go-rest-api-boilerplate
-
+module github.com/aszaychik/prima-inti-api
 go 1.24.0
 
 require (
