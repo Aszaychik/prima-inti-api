@@ -1,5 +1,5 @@
 # ===========================================
-# Go REST API Boilerplate - Development Configuration  
+# Go REST API Boilerplate - Development Configuration
 # ===========================================
 #
 # This file contains development-specific overrides
@@ -9,17 +9,17 @@
 # ===========================================
 
 app:
-  name: "GRAB API (development)"
+  name: "PRIMA INTI API (development)"
   environment: "development"
-  debug: true                       # Enable debug mode in development
+  debug: true # Enable debug mode in development
 
 database:
-  host: "db"
+  host: "localhost"
   port: 5432
   user: "postgres"
-  password: "postgres"              # Default password for development
-  name: "grab"
-  sslmode: "disable"                # SSL disabled for development convenience
+  password: "" # Default password for development
+  name: "prima_inti"
+  sslmode: "disable" # SSL disabled for development convenience
 
 jwt:
   ttlhours: 24
