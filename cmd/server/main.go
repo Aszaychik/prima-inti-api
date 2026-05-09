@@ -14,6 +14,7 @@ import (
 
 	_ "github.com/aszaychik/prima-inti-api/api/docs"
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/db"
 	"github.com/aszaychik/prima-inti-api/internal/migrate"
@@ -79,11 +80,16 @@ func run() error {
 	}
 
 	authService := auth.NewServiceWithRepo(&cfg.JWT, database)
+
 	userRepo := user.NewRepository(database)
 	userService := user.NewService(userRepo)
 	userHandler := user.NewHandler(userService, authService)
 
-	router := server.SetupRouter(userHandler, authService, cfg, database)
+	companyRepo := company.NewRepository(database)
+	companyService := company.NewService(companyRepo)
+	companyHandler := company.NewHandler(companyService)
+
+	router := server.SetupRouter(userHandler, authService, companyHandler, cfg, database)
 
 	port := cfg.Server.Port
 	if port == "" {

@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/errors"
 	"github.com/aszaychik/prima-inti-api/internal/health"
@@ -16,7 +17,7 @@ import (
 )
 
 // SetupRouter creates and configures the Gin router
-func SetupRouter(userHandler *user.Handler, authService auth.Service, cfg *config.Config, db *gorm.DB) *gin.Engine {
+func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHandler *company.Handler, cfg *config.Config, db *gorm.DB) *gin.Engine {
 	router := gin.New()
 
 	if cfg.App.Environment == "production" {
@@ -106,6 +107,22 @@ func SetupRouter(userHandler *user.Handler, authService auth.Service, cfg *confi
 			adminGroup.GET("/users/:id", userHandler.GetUser)
 			adminGroup.PUT("/users/:id", userHandler.UpdateUser)
 			adminGroup.DELETE("/users/:id", userHandler.DeleteUser)
+		}
+
+		// ---- Company Profile Routes ----
+		// Public read (anyone can view company profile)
+		v1.GET("/company-profile", companyHandler.GetCompanyProfile)
+
+		companyGroup := v1.Group("/company-profile")
+
+		// Admin-only write operations
+		companyGroupAdmin := companyGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
+		{
+			companyGroupAdmin.POST("", companyHandler.CreateCompanyProfile)
+			companyGroupAdmin.PUT("", companyHandler.UpdateCompanyProfile)
+			companyGroupAdmin.POST("/links", companyHandler.AddExternalLink)
+			companyGroupAdmin.PUT("/links/:linkId", companyHandler.UpdateExternalLink)
+			companyGroupAdmin.DELETE("/links/:linkId", companyHandler.DeleteExternalLink)
 		}
 	}
 
