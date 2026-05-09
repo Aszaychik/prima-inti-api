@@ -20,10 +20,13 @@ func NewHandler(service Service) *Handler {
 
 // GetCompanyProfile godoc
 // @Summary Get company profile
+// @Description Get the company profile (public)
 // @Tags company
+// @Accept json
 // @Produce json
-// @Success 200 {object} CompanyResponse
-// @Failure 404 {object} apperrors.APIError
+// @Success 200 {object} errors.Response{success=bool,data=CompanyResponse} "Company profile retrieved"
+// @Failure 404 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Company profile not found"
+// @Failure 500 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Internal server error"
 // @Router /api/v1/company-profile [get]
 func (h *Handler) GetCompanyProfile(c *gin.Context) {
 	profile, err := h.service.GetCompanyProfile(c.Request.Context())
@@ -42,13 +45,16 @@ func (h *Handler) GetCompanyProfile(c *gin.Context) {
 
 // CreateCompanyProfile godoc
 // @Summary Create company profile (admin only)
+// @Description Create the company profile (only admin)
 // @Tags company
 // @Accept json
 // @Produce json
 // @Param body body CreateCompanyRequest true "Company data"
-// @Success 201 {object} CompanyResponse
-// @Failure 400 {object} apperrors.APIError
-// @Failure 409 {object} apperrors.APIError
+// @Security BearerAuth
+// @Success 201 {object} errors.Response{success=bool,data=CompanyResponse} "Company profile created"
+// @Failure 400 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Invalid input"
+// @Failure 409 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Company profile already exists"
+// @Failure 500 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Internal server error"
 // @Router /api/v1/company-profile [post]
 func (h *Handler) CreateCompanyProfile(c *gin.Context) {
 	var req CreateCompanyRequest
@@ -75,13 +81,16 @@ func (h *Handler) CreateCompanyProfile(c *gin.Context) {
 
 // UpdateCompanyProfile godoc
 // @Summary Update company profile (admin only)
+// @Description Update company profile fields (partial update allowed)
 // @Tags company
 // @Accept json
 // @Produce json
 // @Param body body UpdateCompanyRequest true "Update fields"
-// @Success 200 {object} CompanyResponse
-// @Failure 400 {object} apperrors.APIError
-// @Failure 404 {object} apperrors.APIError
+// @Security BearerAuth
+// @Success 200 {object} errors.Response{success=bool,data=CompanyResponse} "Company profile updated"
+// @Failure 400 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Invalid input"
+// @Failure 404 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Company profile not found"
+// @Failure 500 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Internal server error"
 // @Router /api/v1/company-profile [put]
 func (h *Handler) UpdateCompanyProfile(c *gin.Context) {
 	var req UpdateCompanyRequest
@@ -107,14 +116,17 @@ func (h *Handler) UpdateCompanyProfile(c *gin.Context) {
 }
 
 // AddExternalLink godoc
-// @Summary Add external link to company profile
+// @Summary Add external link to company profile (admin only)
+// @Description Add a new external link (e.g., social media, website)
 // @Tags company
 // @Accept json
 // @Produce json
 // @Param body body CreateLinkRequest true "Link data"
-// @Success 201 {object} ExternalLinkResp
-// @Failure 400 {object} apperrors.APIError
-// @Failure 404 {object} apperrors.APIError
+// @Security BearerAuth
+// @Success 201 {object} errors.Response{success=bool,data=ExternalLinkResp} "External link created"
+// @Failure 400 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Invalid input"
+// @Failure 404 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Company profile not found"
+// @Failure 500 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Internal server error"
 // @Router /api/v1/company-profile/links [post]
 func (h *Handler) AddExternalLink(c *gin.Context) {
 	var req CreateLinkRequest
@@ -141,15 +153,18 @@ func (h *Handler) AddExternalLink(c *gin.Context) {
 }
 
 // UpdateExternalLink godoc
-// @Summary Update an external link
+// @Summary Update an external link (admin only)
+// @Description Update an existing external link by its ID
 // @Tags company
 // @Accept json
 // @Produce json
-// @Param linkId path string true "Link ID"
+// @Param linkId path string true "Link ID (UUID)"
 // @Param body body UpdateLinkRequest true "Update fields"
-// @Success 200 {object} ExternalLinkResp
-// @Failure 400 {object} apperrors.APIError
-// @Failure 404 {object} apperrors.APIError
+// @Security BearerAuth
+// @Success 200 {object} errors.Response{success=bool,data=ExternalLinkResp} "External link updated"
+// @Failure 400 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Invalid ID or input"
+// @Failure 404 {object} errors.Response{success=bool,error=errors.ErrorInfo} "External link not found"
+// @Failure 500 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Internal server error"
 // @Router /api/v1/company-profile/links/{linkId} [put]
 func (h *Handler) UpdateExternalLink(c *gin.Context) {
 	linkID, err := uuid.Parse(c.Param("linkId"))
@@ -182,12 +197,16 @@ func (h *Handler) UpdateExternalLink(c *gin.Context) {
 }
 
 // DeleteExternalLink godoc
-// @Summary Delete an external link
+// @Summary Delete an external link (admin only)
+// @Description Delete an external link by its ID
 // @Tags company
-// @Param linkId path string true "Link ID"
-// @Success 204
-// @Failure 400 {object} apperrors.APIError
-// @Failure 404 {object} apperrors.APIError
+// @Produce json
+// @Param linkId path string true "Link ID (UUID)"
+// @Security BearerAuth
+// @Success 204 "No Content"
+// @Failure 400 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Invalid link ID"
+// @Failure 404 {object} errors.Response{success=bool,error=errors.ErrorInfo} "External link not found"
+// @Failure 500 {object} errors.Response{success=bool,error=errors.ErrorInfo} "Internal server error"
 // @Router /api/v1/company-profile/links/{linkId} [delete]
 func (h *Handler) DeleteExternalLink(c *gin.Context) {
 	linkID, err := uuid.Parse(c.Param("linkId"))
