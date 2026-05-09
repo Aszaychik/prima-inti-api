@@ -7,10 +7,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/auth"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/contextutil"
-	apiErrors "github.com/vahiiiid/go-rest-api-boilerplate/internal/errors"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/middleware"
+	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/contextutil"
+	apiErrors "github.com/aszaychik/prima-inti-api/internal/errors"
+	"github.com/aszaychik/prima-inti-api/internal/middleware"
 )
 
 // Handler handles user-related HTTP requests

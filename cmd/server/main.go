@@ -12,13 +12,13 @@ import (
 
 	"gorm.io/gorm"
 
-	_ "github.com/vahiiiid/go-rest-api-boilerplate/api/docs"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/auth"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/config"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/db"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/migrate"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/server"
-	"github.com/vahiiiid/go-rest-api-boilerplate/internal/user"
+	_ "github.com/aszaychik/prima-inti-api/api/docs"
+	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/config"
+	"github.com/aszaychik/prima-inti-api/internal/db"
+	"github.com/aszaychik/prima-inti-api/internal/migrate"
+	"github.com/aszaychik/prima-inti-api/internal/server"
+	"github.com/aszaychik/prima-inti-api/internal/user"
 )
 
 // @title Go REST API Boilerplate
