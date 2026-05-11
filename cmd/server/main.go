@@ -14,6 +14,7 @@ import (
 
 	_ "github.com/aszaychik/prima-inti-api/api/docs"
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/db"
@@ -89,7 +90,11 @@ func run() error {
 	companyService := company.NewService(companyRepo)
 	companyHandler := company.NewHandler(companyService)
 
-	router := server.SetupRouter(userHandler, authService, companyHandler, cfg, database)
+	categoryRepo := category.NewRepository(database)
+	categoryService := category.NewService(categoryRepo)
+	categoryHandler := category.NewHandler(categoryService)
+
+	router := server.SetupRouter(userHandler, authService, companyHandler, categoryHandler, cfg, database)
 
 	port := cfg.Server.Port
 	if port == "" {

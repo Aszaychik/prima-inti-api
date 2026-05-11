@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/errors"
@@ -17,7 +18,7 @@ import (
 )
 
 // SetupRouter creates and configures the Gin router
-func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHandler *company.Handler, cfg *config.Config, db *gorm.DB) *gin.Engine {
+func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHandler *company.Handler, categoryHandler *category.Handler, cfg *config.Config, db *gorm.DB) *gin.Engine {
 	router := gin.New()
 
 	if cfg.App.Environment == "production" {
@@ -123,6 +124,19 @@ func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHan
 			companyGroupAdmin.POST("/links", companyHandler.AddExternalLink)
 			companyGroupAdmin.PUT("/links/:linkId", companyHandler.UpdateExternalLink)
 			companyGroupAdmin.DELETE("/links/:linkId", companyHandler.DeleteExternalLink)
+		}
+
+		// Category routes
+		v1.GET("/categories", categoryHandler.ListCategories)
+		v1.GET("/categories/:id", categoryHandler.GetCategory)
+
+		// Admin only category write operations
+		categoryGroup := v1.Group("/categories")
+		categoryGroupAdmin := categoryGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
+		{
+			categoryGroupAdmin.POST("", categoryHandler.CreateCategory)
+			categoryGroupAdmin.PUT("/:id", categoryHandler.UpdateCategory)
+			categoryGroupAdmin.DELETE("/:id", categoryHandler.DeleteCategory)
 		}
 	}
 
