@@ -8,18 +8,14 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
-	"github.com/aszaychik/prima-inti-api/internal/brand"
-	"github.com/aszaychik/prima-inti-api/internal/category"
-	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/errors"
 	"github.com/aszaychik/prima-inti-api/internal/health"
 	"github.com/aszaychik/prima-inti-api/internal/middleware"
-	"github.com/aszaychik/prima-inti-api/internal/user"
 )
 
 // SetupRouter creates and configures the Gin router
-func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHandler *company.Handler, categoryHandler *category.Handler, brandHandler *brand.Handler, cfg *config.Config, db *gorm.DB) *gin.Engine {
+func SetupRouter(handlers *Handlers, authService auth.Service, cfg *config.Config, db *gorm.DB) *gin.Engine {
 	router := gin.New()
 
 	if cfg.App.Environment == "production" {
@@ -84,20 +80,20 @@ func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHan
 	{
 		authGroup := v1.Group("/auth")
 		{
-			authGroup.POST("/register", userHandler.Register)
-			authGroup.POST("/login", userHandler.Login)
-			authGroup.POST("/refresh", userHandler.RefreshToken)
-			authGroup.POST("/logout", auth.AuthMiddleware(authService), userHandler.Logout)
-			authGroup.GET("/me", auth.AuthMiddleware(authService), userHandler.GetMe)
+			authGroup.POST("/register", handlers.User.Register)
+			authGroup.POST("/login", handlers.User.Login)
+			authGroup.POST("/refresh", handlers.User.RefreshToken)
+			authGroup.POST("/logout", auth.AuthMiddleware(authService), handlers.User.Logout)
+			authGroup.GET("/me", auth.AuthMiddleware(authService), handlers.User.GetMe)
 		}
 
 		// User endpoints - authenticated users can access their own resources
 		usersGroup := v1.Group("/users")
 		usersGroup.Use(auth.AuthMiddleware(authService))
 		{
-			usersGroup.GET("/:id", userHandler.GetUser)
-			usersGroup.PUT("/:id", userHandler.UpdateUser)
-			usersGroup.DELETE("/:id", userHandler.DeleteUser)
+			usersGroup.GET("/:id", handlers.User.GetUser)
+			usersGroup.PUT("/:id", handlers.User.UpdateUser)
+			usersGroup.DELETE("/:id", handlers.User.DeleteUser)
 		}
 
 		// Admin endpoints - admin role required, following REST best practices
@@ -105,51 +101,51 @@ func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHan
 		adminGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
 			// User management endpoints
-			adminGroup.GET("/users", userHandler.ListUsers)
-			adminGroup.GET("/users/:id", userHandler.GetUser)
-			adminGroup.PUT("/users/:id", userHandler.UpdateUser)
-			adminGroup.DELETE("/users/:id", userHandler.DeleteUser)
+			adminGroup.GET("/users", handlers.User.ListUsers)
+			adminGroup.GET("/users/:id", handlers.User.GetUser)
+			adminGroup.PUT("/users/:id", handlers.User.UpdateUser)
+			adminGroup.DELETE("/users/:id", handlers.User.DeleteUser)
 		}
 
 		// ---- Company Profile Routes ----
-		v1.GET("/company-profile", companyHandler.GetCompanyProfile)
+		v1.GET("/company-profile", handlers.Company.GetCompanyProfile)
 
 		companyGroup := v1.Group("/company-profile")
 
 		// Admin-only write operations
 		companyGroupAdmin := companyGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
-			companyGroupAdmin.POST("", companyHandler.CreateCompanyProfile)
-			companyGroupAdmin.PUT("", companyHandler.UpdateCompanyProfile)
-			companyGroupAdmin.POST("/links", companyHandler.AddExternalLink)
-			companyGroupAdmin.PUT("/links/:linkId", companyHandler.UpdateExternalLink)
-			companyGroupAdmin.DELETE("/links/:linkId", companyHandler.DeleteExternalLink)
+			companyGroupAdmin.POST("", handlers.Company.CreateCompanyProfile)
+			companyGroupAdmin.PUT("", handlers.Company.UpdateCompanyProfile)
+			companyGroupAdmin.POST("/links", handlers.Company.AddExternalLink)
+			companyGroupAdmin.PUT("/links/:linkId", handlers.Company.UpdateExternalLink)
+			companyGroupAdmin.DELETE("/links/:linkId", handlers.Company.DeleteExternalLink)
 		}
 
 		// ---- Category Routes ----
-		v1.GET("/categories", categoryHandler.ListCategories)
-		v1.GET("/categories/:id", categoryHandler.GetCategory)
+		v1.GET("/categories", handlers.Category.ListCategories)
+		v1.GET("/categories/:id", handlers.Category.GetCategory)
 
 		// Admin only write operations
 		categoryGroup := v1.Group("/categories")
 		categoryGroupAdmin := categoryGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
-			categoryGroupAdmin.POST("", categoryHandler.CreateCategory)
-			categoryGroupAdmin.PUT("/:id", categoryHandler.UpdateCategory)
-			categoryGroupAdmin.DELETE("/:id", categoryHandler.DeleteCategory)
+			categoryGroupAdmin.POST("", handlers.Category.CreateCategory)
+			categoryGroupAdmin.PUT("/:id", handlers.Category.UpdateCategory)
+			categoryGroupAdmin.DELETE("/:id", handlers.Category.DeleteCategory)
 		}
 
 		// ---- Brand Routes ----
-		v1.GET("/brands", brandHandler.ListBrands)
-		v1.GET("/brands/:id", brandHandler.GetBrand)
+		v1.GET("/brands", handlers.Brand.ListBrands)
+		v1.GET("/brands/:id", handlers.Brand.GetBrand)
 
 		// Admin only write operations
 		brandGroup := v1.Group("/brands")
 		brandGroupAdmin := brandGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
-			brandGroupAdmin.POST("", brandHandler.CreateBrand)
-			brandGroupAdmin.PUT("/:id", brandHandler.UpdateBrand)
-			brandGroupAdmin.DELETE("/:id", brandHandler.DeleteBrand)
+			brandGroupAdmin.POST("", handlers.Brand.CreateBrand)
+			brandGroupAdmin.PUT("/:id", handlers.Brand.UpdateBrand)
+			brandGroupAdmin.DELETE("/:id", handlers.Brand.DeleteBrand)
 		}
 	}
 

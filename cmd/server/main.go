@@ -99,7 +99,13 @@ func run() error {
 	brandService := brand.NewService(brandRepo)
 	brandHandler := brand.NewHandler(brandService)
 
-	router := server.SetupRouter(userHandler, authService, companyHandler, categoryHandler, brandHandler, cfg, database)
+	handlers := &server.Handlers{
+		User:     userHandler,
+		Company:  companyHandler,
+		Category: categoryHandler,
+		Brand:    brandHandler,
+	}
+	router := server.SetupRouter(handlers, authService, cfg, database)
 
 	port := cfg.Server.Port
 	if port == "" {
