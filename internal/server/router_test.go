@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/brand"
 	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
@@ -25,6 +26,7 @@ func TestSetupRouter_HealthEndpoint(t *testing.T) {
 	mockUserHandler := &user.Handler{}
 	mockCompanyHandler := &company.Handler{}
 	mockCategoryHandler := &category.Handler{}
+	mockBrandHandler := &brand.Handler{}
 
 	cfg := &config.JWTConfig{
 		Secret:   "test-secret",
@@ -51,7 +53,7 @@ func TestSetupRouter_HealthEndpoint(t *testing.T) {
 		},
 	}
 
-	router := SetupRouter(mockUserHandler, mockAuthService, mockCompanyHandler, mockCategoryHandler, testConfig, db)
+	router := SetupRouter(mockUserHandler, mockAuthService, mockCompanyHandler, mockCategoryHandler, mockBrandHandler, testConfig, db)
 
 	assert.NotNil(t, router)
 

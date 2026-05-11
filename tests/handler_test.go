@@ -15,6 +15,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/brand"
 	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
@@ -81,8 +82,11 @@ func setupTestRouter(t *testing.T) *gin.Engine {
 	categoryRepo := category.NewRepository(database)
 	categoryService := category.NewService(categoryRepo)
 	categoryHandler := category.NewHandler(categoryService)
+	brandRepo := brand.NewRepository(database)
+	brandService := brand.NewService(brandRepo)
+	brandHandler := brand.NewHandler(brandService)
 
-	router := server.SetupRouter(userHandler, authService, companyHandler, categoryHandler, testCfg, database)
+	router := server.SetupRouter(userHandler, authService, companyHandler, categoryHandler, brandHandler, testCfg, database)
 
 	return router
 }
@@ -110,8 +114,11 @@ func setupRateLimitTestRouter(t *testing.T) *gin.Engine {
 	categoryRepo := category.NewRepository(database)
 	categoryService := category.NewService(categoryRepo)
 	categoryHandler := category.NewHandler(categoryService)
+	brandRepo := brand.NewRepository(database)
+	brandService := brand.NewService(brandRepo)
+	brandHandler := brand.NewHandler(brandService)
 
-	return server.SetupRouter(userHandler, authService, companyHandler, categoryHandler, testCfg, database)
+	return server.SetupRouter(userHandler, authService, companyHandler, categoryHandler, brandHandler, testCfg, database)
 }
 
 func TestRegisterHandler(t *testing.T) {

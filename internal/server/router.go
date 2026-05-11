@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/brand"
 	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
@@ -18,7 +19,7 @@ import (
 )
 
 // SetupRouter creates and configures the Gin router
-func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHandler *company.Handler, categoryHandler *category.Handler, cfg *config.Config, db *gorm.DB) *gin.Engine {
+func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHandler *company.Handler, categoryHandler *category.Handler, brandHandler *brand.Handler, cfg *config.Config, db *gorm.DB) *gin.Engine {
 	router := gin.New()
 
 	if cfg.App.Environment == "production" {
@@ -111,7 +112,6 @@ func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHan
 		}
 
 		// ---- Company Profile Routes ----
-		// Public read (anyone can view company profile)
 		v1.GET("/company-profile", companyHandler.GetCompanyProfile)
 
 		companyGroup := v1.Group("/company-profile")
@@ -126,17 +126,30 @@ func SetupRouter(userHandler *user.Handler, authService auth.Service, companyHan
 			companyGroupAdmin.DELETE("/links/:linkId", companyHandler.DeleteExternalLink)
 		}
 
-		// Category routes
+		// ---- Category Routes ----
 		v1.GET("/categories", categoryHandler.ListCategories)
 		v1.GET("/categories/:id", categoryHandler.GetCategory)
 
-		// Admin only category write operations
+		// Admin only write operations
 		categoryGroup := v1.Group("/categories")
 		categoryGroupAdmin := categoryGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
 			categoryGroupAdmin.POST("", categoryHandler.CreateCategory)
 			categoryGroupAdmin.PUT("/:id", categoryHandler.UpdateCategory)
 			categoryGroupAdmin.DELETE("/:id", categoryHandler.DeleteCategory)
+		}
+
+		// ---- Brand Routes ----
+		v1.GET("/brands", brandHandler.ListBrands)
+		v1.GET("/brands/:id", brandHandler.GetBrand)
+
+		// Admin only write operations
+		brandGroup := v1.Group("/brands")
+		brandGroupAdmin := brandGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
+		{
+			brandGroupAdmin.POST("", brandHandler.CreateBrand)
+			brandGroupAdmin.PUT("/:id", brandHandler.UpdateBrand)
+			brandGroupAdmin.DELETE("/:id", brandHandler.DeleteBrand)
 		}
 	}
 
