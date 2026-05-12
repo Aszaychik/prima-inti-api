@@ -1,4 +1,4 @@
-.PHONY: help quick-start up down restart logs build test test-coverage lint lint-fix swag migrate-create migrate-up migrate-down migrate-status migrate-goto migrate-force migrate-drop build-binary run-binary clean generate-jwt-secret check-env
+.PHONY: help quick-start up down restart logs build test test-coverage lint lint-fix swag migrate-create migrate-up migrate-down migrate-status migrate-goto migrate-force migrate-drop seed build-binary run-binary clean generate-jwt-secret check-env
 
 # Container name (from docker-compose.yml)
 CONTAINER_NAME := prima_inti_api
@@ -55,6 +55,7 @@ help:
 	@echo "  make migrate-goto VERSION=<n>    - Go to specific version"
 	@echo "  make migrate-force VERSION=<n>   - Force set version (recovery)"
 	@echo "  make migrate-drop                - Drop all tables"
+	@echo "  make seed                        - Seed database with initial data"
 	@echo ""
 	@echo "⚙️  Native Build (requires Go on host):"
 	@echo "  make build-binary   - Build Go binary directly (no Docker)"
@@ -320,6 +321,22 @@ else
 	@if command -v go >/dev/null 2>&1; then \
 		echo "$(ENV_MSG)"; \
 		go run cmd/migrate/main.go drop --force; \
+	else \
+		echo "❌ Error: Docker container not running and Go not installed"; \
+		echo "Please run: make up"; \
+		exit 1; \
+	fi
+endif
+
+## seed: Seed database with initial data
+seed:
+ifdef CONTAINER_RUNNING
+	@echo "$(ENV_MSG)"
+	@$(EXEC_CMD) go run cmd/seed/main.go
+else
+	@if command -v go >/dev/null 2>&1; then \
+		echo "$(ENV_MSG)"; \
+		go run cmd/seed/main.go; \
 	else \
 		echo "❌ Error: Docker container not running and Go not installed"; \
 		echo "Please run: make up"; \
