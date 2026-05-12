@@ -112,7 +112,7 @@ func SetupRouter(handlers *Handlers, authService auth.Service, cfg *config.Confi
 
 		companyGroup := v1.Group("/company-profile")
 
-		// Admin-only write operations
+		// Admin-only company profile write operations
 		companyGroupAdmin := companyGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
 			companyGroupAdmin.POST("", handlers.Company.CreateCompanyProfile)
@@ -126,7 +126,7 @@ func SetupRouter(handlers *Handlers, authService auth.Service, cfg *config.Confi
 		v1.GET("/categories", handlers.Category.ListCategories)
 		v1.GET("/categories/:id", handlers.Category.GetCategory)
 
-		// Admin only write operations
+		// Admin only category write operations
 		categoryGroup := v1.Group("/categories")
 		categoryGroupAdmin := categoryGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
@@ -135,17 +135,32 @@ func SetupRouter(handlers *Handlers, authService auth.Service, cfg *config.Confi
 			categoryGroupAdmin.DELETE("/:id", handlers.Category.DeleteCategory)
 		}
 
-		// ---- Brand Routes ----
+		// ---- Brand Routes (using consistent :brandId param) ----
+		// More specific route first: /brands/:brandId/series
+		v1.GET("/brands/:brandId/series", handlers.Series.ListSeriesByBrand)
 		v1.GET("/brands", handlers.Brand.ListBrands)
-		v1.GET("/brands/:id", handlers.Brand.GetBrand)
+		v1.GET("/brands/:brandId", handlers.Brand.GetBrand) // changed :id → :brandId
 
-		// Admin only write operations
+		// Admin only brand write operations
 		brandGroup := v1.Group("/brands")
 		brandGroupAdmin := brandGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
 		{
 			brandGroupAdmin.POST("", handlers.Brand.CreateBrand)
-			brandGroupAdmin.PUT("/:id", handlers.Brand.UpdateBrand)
-			brandGroupAdmin.DELETE("/:id", handlers.Brand.DeleteBrand)
+			brandGroupAdmin.PUT("/:brandId", handlers.Brand.UpdateBrand)    // changed :id → :brandId
+			brandGroupAdmin.DELETE("/:brandId", handlers.Brand.DeleteBrand) // changed :id → :brandId
+		}
+
+		// ---- Series Routes ----
+		v1.GET("/series", handlers.Series.ListSeries)
+		v1.GET("/series/:id", handlers.Series.GetSeries)
+
+		// Admin only series write operations
+		seriesAdmin := v1.Group("/series")
+		seriesAdmin.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
+		{
+			seriesAdmin.POST("", handlers.Series.CreateSeries)
+			seriesAdmin.PUT("/:id", handlers.Series.UpdateSeries)
+			seriesAdmin.DELETE("/:id", handlers.Series.DeleteSeries)
 		}
 	}
 

@@ -20,6 +20,7 @@ import (
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/db"
 	"github.com/aszaychik/prima-inti-api/internal/migrate"
+	"github.com/aszaychik/prima-inti-api/internal/series"
 	"github.com/aszaychik/prima-inti-api/internal/server"
 	"github.com/aszaychik/prima-inti-api/internal/user"
 )
@@ -99,11 +100,16 @@ func run() error {
 	brandService := brand.NewService(brandRepo)
 	brandHandler := brand.NewHandler(brandService)
 
+	seriesRepo := series.NewRepository(database)
+	seriesService := series.NewService(seriesRepo)
+	seriesHandler := series.NewHandler(seriesService)
+
 	handlers := &server.Handlers{
 		User:     userHandler,
 		Company:  companyHandler,
 		Category: categoryHandler,
 		Brand:    brandHandler,
+		Series:   seriesHandler,
 	}
 	router := server.SetupRouter(handlers, authService, cfg, database)
 
