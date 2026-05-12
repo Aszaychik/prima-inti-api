@@ -14,10 +14,14 @@ import (
 
 	_ "github.com/aszaychik/prima-inti-api/api/docs"
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/brand"
+	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/db"
 	"github.com/aszaychik/prima-inti-api/internal/migrate"
+	"github.com/aszaychik/prima-inti-api/internal/product"
+	"github.com/aszaychik/prima-inti-api/internal/series"
 	"github.com/aszaychik/prima-inti-api/internal/server"
 	"github.com/aszaychik/prima-inti-api/internal/user"
 )
@@ -89,7 +93,31 @@ func run() error {
 	companyService := company.NewService(companyRepo)
 	companyHandler := company.NewHandler(companyService)
 
-	router := server.SetupRouter(userHandler, authService, companyHandler, cfg, database)
+	categoryRepo := category.NewRepository(database)
+	categoryService := category.NewService(categoryRepo)
+	categoryHandler := category.NewHandler(categoryService)
+
+	brandRepo := brand.NewRepository(database)
+	brandService := brand.NewService(brandRepo)
+	brandHandler := brand.NewHandler(brandService)
+
+	seriesRepo := series.NewRepository(database)
+	seriesService := series.NewService(seriesRepo)
+	seriesHandler := series.NewHandler(seriesService)
+
+	productRepo := product.NewRepository(database)
+	productService := product.NewService(productRepo, brandRepo, categoryRepo, seriesRepo)
+	productHandler := product.NewHandler(productService)
+
+	handlers := &server.Handlers{
+		User:     userHandler,
+		Company:  companyHandler,
+		Category: categoryHandler,
+		Brand:    brandHandler,
+		Series:   seriesHandler,
+		Product:  productHandler,
+	}
+	router := server.SetupRouter(handlers, authService, cfg, database)
 
 	port := cfg.Server.Port
 	if port == "" {

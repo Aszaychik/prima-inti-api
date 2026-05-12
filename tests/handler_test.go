@@ -15,6 +15,8 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/brand"
+	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/db"
@@ -77,8 +79,21 @@ func setupTestRouter(t *testing.T) *gin.Engine {
 	companyRepo := company.NewRepository(database)
 	companyService := company.NewService(companyRepo)
 	companyHandler := company.NewHandler(companyService)
+	categoryRepo := category.NewRepository(database)
+	categoryService := category.NewService(categoryRepo)
+	categoryHandler := category.NewHandler(categoryService)
+	brandRepo := brand.NewRepository(database)
+	brandService := brand.NewService(brandRepo)
+	brandHandler := brand.NewHandler(brandService)
 
-	router := server.SetupRouter(userHandler, authService, companyHandler, testCfg, database)
+	handlers := &server.Handlers{
+		User:     userHandler,
+		Company:  companyHandler,
+		Category: categoryHandler,
+		Brand:    brandHandler,
+	}
+
+	router := server.SetupRouter(handlers, authService, testCfg, database)
 
 	return router
 }
@@ -103,8 +118,21 @@ func setupRateLimitTestRouter(t *testing.T) *gin.Engine {
 	companyRepo := company.NewRepository(database)
 	companyService := company.NewService(companyRepo)
 	companyHandler := company.NewHandler(companyService)
+	categoryRepo := category.NewRepository(database)
+	categoryService := category.NewService(categoryRepo)
+	categoryHandler := category.NewHandler(categoryService)
+	brandRepo := brand.NewRepository(database)
+	brandService := brand.NewService(brandRepo)
+	brandHandler := brand.NewHandler(brandService)
 
-	return server.SetupRouter(userHandler, authService, companyHandler, testCfg, database)
+	handlers := &server.Handlers{
+		User:     userHandler,
+		Company:  companyHandler,
+		Category: categoryHandler,
+		Brand:    brandHandler,
+	}
+
+	return server.SetupRouter(handlers, authService, testCfg, database)
 }
 
 func TestRegisterHandler(t *testing.T) {

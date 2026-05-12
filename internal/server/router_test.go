@@ -11,6 +11,8 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/aszaychik/prima-inti-api/internal/auth"
+	"github.com/aszaychik/prima-inti-api/internal/brand"
+	"github.com/aszaychik/prima-inti-api/internal/category"
 	"github.com/aszaychik/prima-inti-api/internal/company"
 	"github.com/aszaychik/prima-inti-api/internal/config"
 	"github.com/aszaychik/prima-inti-api/internal/user"
@@ -21,8 +23,12 @@ func TestSetupRouter_HealthEndpoint(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to open database: %v", err)
 	}
-	mockUserHandler := &user.Handler{}
-	mockCompanyHandler := &company.Handler{}
+	mockHandlers := &Handlers{
+		User:     &user.Handler{},
+		Company:  &company.Handler{},
+		Category: &category.Handler{},
+		Brand:    &brand.Handler{},
+	}
 
 	cfg := &config.JWTConfig{
 		Secret:   "test-secret",
@@ -49,7 +55,7 @@ func TestSetupRouter_HealthEndpoint(t *testing.T) {
 		},
 	}
 
-	router := SetupRouter(mockUserHandler, mockAuthService, mockCompanyHandler, testConfig, db)
+	router := SetupRouter(mockHandlers, mockAuthService, testConfig, db)
 
 	assert.NotNil(t, router)
 
