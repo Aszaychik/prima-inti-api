@@ -13,6 +13,7 @@ type Repository interface {
 	List(ctx context.Context) ([]Brand, error)
 	Update(ctx context.Context, b *Brand) error
 	Delete(ctx context.Context, id uuid.UUID) error
+	Exists(ctx context.Context, id uuid.UUID) (bool, error)
 }
 
 type repository struct {
@@ -48,4 +49,10 @@ func (r *repository) Update(ctx context.Context, b *Brand) error {
 
 func (r *repository) Delete(ctx context.Context, id uuid.UUID) error {
 	return r.db.WithContext(ctx).Delete(&Brand{}, "id = ?", id).Error
+}
+
+func (r *repository) Exists(ctx context.Context, id uuid.UUID) (bool, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Model(&Brand{}).Where("id = ?", id).Count(&count).Error
+	return count > 0, err
 }

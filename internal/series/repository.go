@@ -14,6 +14,7 @@ type Repository interface {
 	ListByBrand(ctx context.Context, brandID uuid.UUID) ([]Series, error)
 	Update(ctx context.Context, s *Series) error
 	Delete(ctx context.Context, id uuid.UUID) error
+	Exists(ctx context.Context, id uuid.UUID) (bool, error)
 }
 
 type repository struct {
@@ -55,4 +56,10 @@ func (r *repository) Update(ctx context.Context, s *Series) error {
 
 func (r *repository) Delete(ctx context.Context, id uuid.UUID) error {
 	return r.db.WithContext(ctx).Delete(&Series{}, "id = ?", id).Error
+}
+
+func (r *repository) Exists(ctx context.Context, id uuid.UUID) (bool, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Model(&Series{}).Where("id = ?", id).Count(&count).Error
+	return count > 0, err
 }
