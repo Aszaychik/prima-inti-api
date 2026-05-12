@@ -93,11 +93,11 @@ func (h *Handler) ListProductsByBrand(c *gin.Context) {
 // @Summary List products by category ID
 // @Tags products
 // @Produce json
-// @Param categoryId path string true "Category ID"
+// @Param id path string true "Category ID"
 // @Success 200 {object} errors.Response{success=bool,data=[]ProductResponse}
-// @Router /api/v1/categories/{categoryId}/products [get]
+// @Router /api/v1/categories/{id}/products [get]
 func (h *Handler) ListProductsByCategory(c *gin.Context) {
-	categoryID, err := uuid.Parse(c.Param("categoryId"))
+	categoryID, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		apiErr := apperrors.BadRequest("invalid category id")
 		c.JSON(apiErr.Status, apiErr)
@@ -120,11 +120,11 @@ func (h *Handler) ListProductsByCategory(c *gin.Context) {
 // @Summary List products by series ID
 // @Tags products
 // @Produce json
-// @Param seriesId path string true "Series ID"
+// @Param id path string true "Series ID"
 // @Success 200 {object} errors.Response{success=bool,data=[]ProductResponse}
-// @Router /api/v1/series/{seriesId}/products [get]
+// @Router /api/v1/series/{id}/products [get]
 func (h *Handler) ListProductsBySeries(c *gin.Context) {
-	seriesID, err := uuid.Parse(c.Param("seriesId"))
+	seriesID, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		apiErr := apperrors.BadRequest("invalid series id")
 		c.JSON(apiErr.Status, apiErr)

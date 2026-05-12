@@ -123,6 +123,7 @@ func SetupRouter(handlers *Handlers, authService auth.Service, cfg *config.Confi
 		// ---- Category Routes ----
 		v1.GET("/categories", handlers.Category.ListCategories)
 		v1.GET("/categories/:id", handlers.Category.GetCategory)
+		v1.GET("/categories/:id/products", handlers.Product.ListProductsByCategory)
 
 		categoryGroup := v1.Group("/categories")
 		categoryGroupAdmin := categoryGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
@@ -135,7 +136,7 @@ func SetupRouter(handlers *Handlers, authService auth.Service, cfg *config.Confi
 		// ---- Brand Routes (using consistent :brandId param) ----
 		// More specific routes first
 		v1.GET("/brands/:brandId/series", handlers.Series.ListSeriesByBrand)
-		v1.GET("/brands/:brandId/products", handlers.Product.ListProductsByBrand) // NEW
+		v1.GET("/brands/:brandId/products", handlers.Product.ListProductsByBrand)
 		v1.GET("/brands", handlers.Brand.ListBrands)
 		v1.GET("/brands/:brandId", handlers.Brand.GetBrand)
 
@@ -147,13 +148,10 @@ func SetupRouter(handlers *Handlers, authService auth.Service, cfg *config.Confi
 			brandGroupAdmin.DELETE("/:brandId", handlers.Brand.DeleteBrand)
 		}
 
-		// ---- Category Products (nested) ----
-		v1.GET("/categories/:categoryId/products", handlers.Product.ListProductsByCategory) // NEW
-
 		// ---- Series Routes ----
 		v1.GET("/series", handlers.Series.ListSeries)
 		v1.GET("/series/:id", handlers.Series.GetSeries)
-		v1.GET("/series/:seriesId/products", handlers.Product.ListProductsBySeries) // NEW
+		v1.GET("/series/:id/products", handlers.Product.ListProductsBySeries)
 
 		seriesAdmin := v1.Group("/series")
 		seriesAdmin.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
