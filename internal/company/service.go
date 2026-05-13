@@ -43,6 +43,7 @@ func (s *service) CreateCompanyProfile(ctx context.Context, req *CreateCompanyRe
 
 	comp := &CompanyProfile{
 		Name:    req.Name,
+		LogoURL: req.LogoURL,
 		Phone:   req.Phone,
 		Email:   req.Email,
 		Address: req.Address,
@@ -73,6 +74,9 @@ func (s *service) UpdateCompanyProfile(ctx context.Context, req *UpdateCompanyRe
 	}
 	if req.Address != nil {
 		comp.Address = *req.Address
+	}
+	if req.LogoURL != nil {
+		comp.LogoURL = *req.LogoURL
 	}
 
 	if err := s.repo.UpdateCompany(ctx, comp); err != nil {

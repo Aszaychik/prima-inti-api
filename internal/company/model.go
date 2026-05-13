@@ -9,6 +9,7 @@ import (
 type CompanyProfile struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
 	Name      string    `gorm:"not null" json:"name"`
+	LogoURL   string    `gorm:"type:text" json:"logo_url"`
 	Phone     string    `gorm:"not null" json:"phone"`
 	Email     string    `gorm:"not null" json:"email"`
 	Address   string    `gorm:"not null" json:"address"`
