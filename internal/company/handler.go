@@ -236,6 +236,7 @@ func toCompanyResponse(p *CompanyProfile) CompanyResponse {
 	resp := CompanyResponse{
 		ID:        p.ID,
 		Name:      p.Name,
+		LogoURL:   p.LogoURL,
 		Phone:     p.Phone,
 		Email:     p.Email,
 		Address:   p.Address,

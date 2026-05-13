@@ -27,6 +27,7 @@ func seedCompany(db *gorm.DB) error {
 	comp := company.CompanyProfile{
 		ID:      companyID,
 		Name:    "CV PRIMA INTI VANINDO",
+		LogoURL: "https://i.imgpeek.com/3I37ao3Cb5nx",
 		Phone:   "+6289519750202",
 		Email:   "aszaychik@gmail.com",
 		Address: "Jl. Rajawali No.27A Ds, Punggul, Kec. Gedangan, Kabupaten Sidoarjo, Jawa Timur 61254",

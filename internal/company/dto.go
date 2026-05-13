@@ -5,6 +5,7 @@ import "github.com/google/uuid"
 // CreateCompanyRequest
 type CreateCompanyRequest struct {
 	Name    string `json:"name" binding:"required"`
+	LogoURL string `json:"logo_url"`
 	Phone   string `json:"phone" binding:"required"`
 	Email   string `json:"email" binding:"required,email"`
 	Address string `json:"address" binding:"required"`
@@ -13,6 +14,7 @@ type CreateCompanyRequest struct {
 // UpdateCompanyRequest
 type UpdateCompanyRequest struct {
 	Name    *string `json:"name,omitempty"`
+	LogoURL *string `json:"logo_url,omitempty"`
 	Phone   *string `json:"phone,omitempty"`
 	Email   *string `json:"email,omitempty"`
 	Address *string `json:"address,omitempty"`
@@ -22,6 +24,7 @@ type UpdateCompanyRequest struct {
 type CompanyResponse struct {
 	ID            uuid.UUID          `json:"id"`
 	Name          string             `json:"name"`
+	LogoURL       string             `json:"logo_url"`
 	Phone         string             `json:"phone"`
 	Email         string             `json:"email"`
 	Address       string             `json:"address"`
