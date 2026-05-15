@@ -25,15 +25,30 @@ type UpdateProductRequest struct {
 }
 
 type ProductResponse struct {
-	ID          uuid.UUID  `json:"id"`
-	BrandID     uuid.UUID  `json:"brand_id"`
-	CategoryID  uuid.UUID  `json:"category_id"`
-	SeriesID    *uuid.UUID `json:"series_id,omitempty"`
-	Model       string     `json:"model"`
-	Description string     `json:"description"`
-	Price       *float64   `json:"price,omitempty"`
-	Stock       int        `json:"stock"`
-	ImageURL    string     `json:"image_url"`
-	CreatedAt   string     `json:"created_at"`
-	UpdatedAt   string     `json:"updated_at"`
+	ID          string       `json:"id"`
+	Brand       BrandInfo    `json:"brand"`
+	Category    CategoryInfo `json:"category"`
+	Series      *SeriesInfo  `json:"series,omitempty"`
+	Model       string       `json:"model"`
+	Description string       `json:"description"`
+	Price       *float64     `json:"price,omitempty"`
+	Stock       int          `json:"stock"`
+	ImageURL    string       `json:"image_url"`
+	CreatedAt   string       `json:"created_at"`
+	UpdatedAt   string       `json:"updated_at"`
+}
+
+type BrandInfo struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type CategoryInfo struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type SeriesInfo struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }

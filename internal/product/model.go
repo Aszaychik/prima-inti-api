@@ -18,4 +18,25 @@ type Product struct {
 	ImageURL    string     `json:"image_url"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
+
+	// Relationships (for preloading)
+	Brand    *Brand    `gorm:"foreignKey:BrandID"`
+	Category *Category `gorm:"foreignKey:CategoryID"`
+	Series   *Series   `gorm:"foreignKey:SeriesID"`
+}
+
+// Define minimal structs for preloading (or import from their packages if no cycle)
+type Brand struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+type Category struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+type Series struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
 }
