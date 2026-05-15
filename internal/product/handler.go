@@ -252,9 +252,15 @@ func (h *Handler) DeleteProduct(c *gin.Context) {
 
 func toProductResponse(p *Product) ProductResponse {
 	resp := ProductResponse{
-		ID:          p.ID,
-		BrandID:     p.BrandID,
-		CategoryID:  p.CategoryID,
+		ID: p.ID.String(),
+		Brand: BrandInfo{
+			ID:   p.BrandID.String(),
+			Name: "",
+		},
+		Category: CategoryInfo{
+			ID:   p.CategoryID.String(),
+			Name: "",
+		},
 		Model:       p.Model,
 		Description: p.Description,
 		Price:       p.Price,
@@ -263,8 +269,23 @@ func toProductResponse(p *Product) ProductResponse {
 		CreatedAt:   p.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:   p.UpdatedAt.Format(time.RFC3339),
 	}
-	if p.SeriesID != nil {
-		resp.SeriesID = p.SeriesID
+
+	if p.Brand != nil {
+		resp.Brand.Name = p.Brand.Name
+	}
+	if p.Category != nil {
+		resp.Category.Name = p.Category.Name
+	}
+	if p.Series != nil && p.SeriesID != nil {
+		resp.Series = &SeriesInfo{
+			ID:   p.Series.ID.String(),
+			Name: p.Series.Name,
+		}
+	} else if p.SeriesID != nil {
+		resp.Series = &SeriesInfo{
+			ID:   p.SeriesID.String(),
+			Name: "",
+		}
 	}
 	return resp
 }

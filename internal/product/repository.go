@@ -32,7 +32,11 @@ func (r *repository) Create(ctx context.Context, p *Product) error {
 
 func (r *repository) GetByID(ctx context.Context, id uuid.UUID) (*Product, error) {
 	var p Product
-	err := r.db.WithContext(ctx).First(&p, "id = ?", id).Error
+	err := r.db.WithContext(ctx).
+		Preload("Brand").
+		Preload("Category").
+		Preload("Series").
+		First(&p, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -41,25 +45,48 @@ func (r *repository) GetByID(ctx context.Context, id uuid.UUID) (*Product, error
 
 func (r *repository) List(ctx context.Context) ([]Product, error) {
 	var list []Product
-	err := r.db.WithContext(ctx).Order("model ASC").Find(&list).Error
+	err := r.db.WithContext(ctx).
+		Preload("Brand").
+		Preload("Category").
+		Preload("Series").
+		Order("model ASC").
+		Find(&list).Error
 	return list, err
 }
 
 func (r *repository) ListByBrand(ctx context.Context, brandID uuid.UUID) ([]Product, error) {
 	var list []Product
-	err := r.db.WithContext(ctx).Where("brand_id = ?", brandID).Order("model ASC").Find(&list).Error
+	err := r.db.WithContext(ctx).
+		Preload("Brand").
+		Preload("Category").
+		Preload("Series").
+		Where("brand_id = ?", brandID).
+		Order("model ASC").
+		Find(&list).Error
 	return list, err
 }
 
 func (r *repository) ListByCategory(ctx context.Context, categoryID uuid.UUID) ([]Product, error) {
 	var list []Product
-	err := r.db.WithContext(ctx).Where("category_id = ?", categoryID).Order("model ASC").Find(&list).Error
+	err := r.db.WithContext(ctx).
+		Preload("Brand").
+		Preload("Category").
+		Preload("Series").
+		Where("category_id = ?", categoryID).
+		Order("model ASC").
+		Find(&list).Error
 	return list, err
 }
 
 func (r *repository) ListBySeries(ctx context.Context, seriesID uuid.UUID) ([]Product, error) {
 	var list []Product
-	err := r.db.WithContext(ctx).Where("series_id = ?", seriesID).Order("model ASC").Find(&list).Error
+	err := r.db.WithContext(ctx).
+		Preload("Brand").
+		Preload("Category").
+		Preload("Series").
+		Where("series_id = ?", seriesID).
+		Order("model ASC").
+		Find(&list).Error
 	return list, err
 }
 
