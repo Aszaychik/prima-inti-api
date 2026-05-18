@@ -30,6 +30,7 @@ type Service interface {
 	Create(ctx context.Context, req *CreateProductRequest) (*Product, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*Product, error)
 	List(ctx context.Context) ([]Product, error)
+	ListWithFilters(ctx context.Context, filters ProductFilters) ([]Product, error)
 	ListByBrand(ctx context.Context, brandID uuid.UUID) ([]Product, error)
 	ListByCategory(ctx context.Context, categoryID uuid.UUID) ([]Product, error)
 	ListBySeries(ctx context.Context, seriesID uuid.UUID) ([]Product, error)
@@ -93,6 +94,10 @@ func (s *service) GetByID(ctx context.Context, id uuid.UUID) (*Product, error) {
 
 func (s *service) List(ctx context.Context) ([]Product, error) {
 	return s.repo.List(ctx)
+}
+
+func (s *service) ListWithFilters(ctx context.Context, filters ProductFilters) ([]Product, error) {
+	return s.repo.ListWithFilters(ctx, filters)
 }
 
 func (s *service) ListByBrand(ctx context.Context, brandID uuid.UUID) ([]Product, error) {

@@ -18,13 +18,51 @@ func NewHandler(service Service) *Handler {
 }
 
 // ListProducts godoc
-// @Summary List all products
+// @Summary List all products (with optional filters)
 // @Tags products
 // @Produce json
+// @Param brand query string false "Brand ID or name"
+// @Param category query string false "Category ID or name"
+// @Param series query string false "Series ID or name"
+// @Param model query string false "Product model (partial match)"
 // @Success 200 {object} errors.Response{success=bool,data=[]ProductResponse}
 // @Router /api/v1/products [get]
 func (h *Handler) ListProducts(c *gin.Context) {
-	products, err := h.service.List(c.Request.Context())
+	filters := ProductFilters{}
+
+	// Parse brand
+	if brandParam := c.Query("brand"); brandParam != "" {
+		if id, err := uuid.Parse(brandParam); err == nil {
+			filters.BrandID = &id
+		} else {
+			filters.BrandName = &brandParam
+		}
+	}
+
+	// Parse category
+	if catParam := c.Query("category"); catParam != "" {
+		if id, err := uuid.Parse(catParam); err == nil {
+			filters.CategoryID = &id
+		} else {
+			filters.CategoryName = &catParam
+		}
+	}
+
+	// Parse series
+	if seriesParam := c.Query("series"); seriesParam != "" {
+		if id, err := uuid.Parse(seriesParam); err == nil {
+			filters.SeriesID = &id
+		} else {
+			filters.SeriesName = &seriesParam
+		}
+	}
+
+	// Parse model
+	if modelParam := c.Query("model"); modelParam != "" {
+		filters.Model = &modelParam
+	}
+
+	products, err := h.service.ListWithFilters(c.Request.Context(), filters)
 	if err != nil {
 		apiErr := apperrors.InternalServerError(err)
 		c.JSON(apiErr.Status, apiErr)
