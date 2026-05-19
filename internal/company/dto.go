@@ -35,6 +35,7 @@ type CompanyResponse struct {
 
 type ExternalLinkResp struct {
 	ID       uuid.UUID `json:"id"`
+	LogoURL  string    `json:"logo_url"`
 	Platform string    `json:"platform"`
 	URL      string    `json:"url"`
 }
@@ -42,11 +43,13 @@ type ExternalLinkResp struct {
 // CreateLinkRequest
 type CreateLinkRequest struct {
 	Platform string `json:"platform" binding:"required"`
+	LogoURL  string `json:"logo_url" binding:"required"`
 	URL      string `json:"url" binding:"required,url"`
 }
 
 // UpdateLinkRequest
 type UpdateLinkRequest struct {
 	Platform *string `json:"platform,omitempty"`
+	LogoURL  *string `json:"logo_url,omitempty"`
 	URL      *string `json:"url,omitempty"`
 }
