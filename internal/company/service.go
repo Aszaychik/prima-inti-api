@@ -90,6 +90,7 @@ func (s *service) AddExternalLink(ctx context.Context, companyID uuid.UUID, req 
 		CompanyID: companyID,
 		Platform:  req.Platform,
 		URL:       req.URL,
+		LogoURL:   req.LogoURL,
 	}
 	if err := s.repo.CreateLink(ctx, link); err != nil {
 		return nil, err
@@ -108,6 +109,9 @@ func (s *service) UpdateExternalLink(ctx context.Context, linkID uuid.UUID, req 
 	}
 	if req.URL != nil {
 		link.URL = *req.URL
+	}
+	if req.LogoURL != nil {
+		link.LogoURL = *req.LogoURL
 	}
 
 	if err := s.repo.UpdateLink(ctx, link); err != nil {

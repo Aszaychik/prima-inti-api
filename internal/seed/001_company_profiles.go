@@ -42,12 +42,14 @@ func seedCompany(db *gorm.DB) error {
 			CompanyID: companyID,
 			Platform:  "tokopedia",
 			URL:       "https://www.tokopedia.com/prima-automation",
+			LogoURL:   "https://cdn.brandfetch.io/idoruRsDhk/w/800/h/784/theme/dark/symbol.png?c=1dxbfHSJFAPEGdCLU4o5B",
 		},
 		{
 			ID:        uuid.New(),
 			CompanyID: companyID,
 			Platform:  "shopee",
 			URL:       "https://shopee.co.id/primainti123",
+			LogoURL:   "https://cdn.brandfetch.io/id2_tkJWD3/w/32/h/32/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B",
 		},
 	}
 	for _, link := range links {

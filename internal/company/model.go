@@ -29,6 +29,7 @@ type ExternalLink struct {
 	CompanyID uuid.UUID `gorm:"type:uuid;not null" json:"company_id"`
 	Platform  string    `gorm:"not null" json:"platform"`
 	URL       string    `gorm:"not null" json:"url"`
+	LogoURL   string    `gorm:"type:text" json:"logo_url"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

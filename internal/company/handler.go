@@ -258,5 +258,6 @@ func toLinkResponse(l *ExternalLink) ExternalLinkResp {
 		ID:       l.ID,
 		Platform: l.Platform,
 		URL:      l.URL,
+		LogoURL:  l.LogoURL,
 	}
 }
